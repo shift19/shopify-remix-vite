@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "b0948a3720470452db23464eb906b8ca"
+name = "remix-vite-template"
+application_url = "https://intimate-preview-range-joshua.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "tamas-test-store-local.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://intimate-preview-range-joshua.trycloudflare.com/auth/callback",
+  "https://intimate-preview-range-joshua.trycloudflare.com/auth/shopify/callback",
+  "https://intimate-preview-range-joshua.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false
