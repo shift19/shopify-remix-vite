@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "vite build && vite build --ssr",
+    "predev": "npx prisma generate && npx prisma migrate deploy",
     "dev": "shopify app dev",
     "config:link": "shopify app config link",
     "generate": "shopify app generate",
@@ -15,7 +16,6 @@
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "shopify": "shopify",
     "prisma": "prisma",
-    "graphql-codegen": "graphql-codegen",
     "vite": "vite"
   },
   "type": "module",
@@ -31,6 +31,7 @@
     "@shopify/shopify-api": "^9.2.0",
     "@shopify/shopify-app-remix": "^2.5.0",
     "@shopify/shopify-app-session-storage-prisma": "^4.0.1",
+    "gql.tada": "^1.2.1",
     "isbot": "^5.1.0",
     "prisma": "^5.8.0",
     "react": "^18.2.0",
@@ -38,8 +39,8 @@
     "vite-tsconfig-paths": "^4.3.1"
   },
   "devDependencies": {
+    "@0no-co/graphqlsp": "^1.4.1",
     "@remix-run/eslint-config": "^2.7.1",
-    "@shopify/api-codegen-preset": "^0.0.3",
     "@shopify/app-bridge-types": "^0.0.7",
     "@types/eslint": "^8.40.0",
     "@types/node": "^20.6.3",

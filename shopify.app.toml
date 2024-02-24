@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://intimate-preview-range-joshua.trycloudflare.com"
+application_url = "https://rg-unlikely-puerto-leaving.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://intimate-preview-range-joshua.trycloudflare.com/auth/callback",
-  "https://intimate-preview-range-joshua.trycloudflare.com/auth/shopify/callback",
-  "https://intimate-preview-range-joshua.trycloudflare.com/api/auth/callback"
+  "https://rg-unlikely-puerto-leaving.trycloudflare.com/auth/callback",
+  "https://rg-unlikely-puerto-leaving.trycloudflare.com/auth/shopify/callback",
+  "https://rg-unlikely-puerto-leaving.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

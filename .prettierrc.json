@@ -1,0 +1,11 @@
+{
+    "editorconfig": true,
+    "singleQuote": true,
+    "arrowParens": "always",
+    "singleAttributePerLine": true,
+    "jsxSingleQuote": true,
+    "bracketSpacing": true,
+    "vueIndentScriptAndStyle": false,
+    "htmlWhitespaceSensitivity": "ignore",
+    "bracketSameLine": false
+}

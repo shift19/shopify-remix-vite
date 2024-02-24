@@ -1,7 +1,15 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "strict": true,
     "skipLibCheck": true,
     "isolatedModules": true,
@@ -17,10 +25,20 @@
     "target": "ES2022",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": [
+        "./app/*"
+      ]
     },
     "types": [
-      "node", "@shopify/app-bridge-types"
+      "node",
+      "@shopify/app-bridge-types"
+    ],
+    "plugins": [
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "https://shopify.dev/admin-graphql-direct-proxy/2024-01",
+        "tadaOutputLocation": "./app/graphql-env.d.ts"
+      }
     ]
   }
 }
