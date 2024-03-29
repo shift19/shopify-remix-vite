@@ -1,8 +1,8 @@
 import { Form, useLoaderData } from '@remix-run/react';
-import type { LoaderData } from '~/routes/_index/loader.server';
+import type { LoaderData } from '~/routes/index/loader.server';
 import styles from './styles.module.css';
 
-export { loader } from '~/routes/_index/loader.server';
+export { loader } from '~/routes/index/loader.server';
 
 const App = () => {
     const { showForm } = useLoaderData<LoaderData>();

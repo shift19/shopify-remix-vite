@@ -14,3 +14,6 @@ trim_trailing_whitespace = true
 # See https://daringfireball.net/projects/markdown/syntax#p
 [*.md]
 trim_trailing_whitespace = false
+
+[*.json]
+indent_size = 2

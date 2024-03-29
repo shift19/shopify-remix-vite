@@ -1,15 +1,18 @@
 import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
+import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
-import type { ActionData } from '~/routes/app._index/action.server';
+import type { ActionData } from '~/routes/app/index/action.server';
 
-export { loader } from '~/routes/app._index/loader.server';
-export { action } from '~/routes/app._index/action.server';
+export { loader } from '~/routes/app/index/loader.server';
+export { action } from '~/routes/app/index/action.server';
 
 const Index = () => {
     const nav = useNavigation();
     const actionData = useActionData<ActionData>();
     const submit = useSubmit();
+    const shopify = useAppBridge();
+
     const isLoading = ['loading', 'submitting'].includes(nav.state) && nav.formMethod === 'POST';
     const productId = String(actionData?.product?.id).replace('gid://shopify/Product/', '');
 
@@ -18,18 +21,12 @@ const Index = () => {
             shopify.toast.show('Product created');
         }
     }, [productId]);
+
     const generateProduct = () => submit({}, { replace: true, method: 'POST' });
 
     return (
         <Page>
-            <ui-title-bar title='Remix app template'>
-                <button
-                    variant='primary'
-                    onClick={generateProduct}
-                >
-                    Generate a product
-                </button>
-            </ui-title-bar>
+            <TitleBar title='Remix app template' />
             <BlockStack gap='500'>
                 <Layout>
                     <Layout.Section>

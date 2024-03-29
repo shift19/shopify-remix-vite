@@ -2,11 +2,11 @@ import { Form, useActionData, useLoaderData } from '@remix-run/react';
 import { AppProvider as PolarisAppProvider, Button, Card, FormLayout, Page, Text, TextField } from '@shopify/polaris';
 import '@shopify/polaris/build/esm/styles.css';
 import { useState } from 'react';
-import type { ActionData } from '~/routes/auth.login/action.server';
-import type { LoaderData } from '~/routes/auth.login/loader.server';
+import type { ActionData } from '~/routes/auth/login/action.server';
+import type { LoaderData } from '~/routes/auth/login/loader.server';
 
-export { loader } from '~/routes/auth.login/loader.server';
-export { action } from '~/routes/auth.login/action.server';
+export { loader } from '~/routes/auth/login/loader.server';
+export { action } from '~/routes/auth/login/action.server';
 
 const Login = () => {
     const loaderData = useLoaderData<LoaderData>();

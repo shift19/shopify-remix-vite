@@ -1,7 +1,7 @@
 import { graphql, type ResultOf, type VariablesOf } from 'gql.tada';
 import { print } from 'graphql';
 
-export const PopulateProduct = graphql(`
+const PopulateProduct = graphql(`
     #graphql
     mutation populateProduct($input: ProductInput!) {
         productCreate(input: $input) {
