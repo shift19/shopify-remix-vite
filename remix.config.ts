@@ -2,7 +2,7 @@ import { vitePlugin as remix } from '@remix-run/dev';
 
 export default () =>
     remix({
-        ignoredRouteFiles: ['**/.*'],
+        ignoredRouteFiles: ['**/*.*'],
         future: {},
         routes: (defineRoutes) =>
             defineRoutes((route) => {

@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://country-vietnam-painful-batman.trycloudflare.com"
+application_url = "https://repository-hart-assure-corrected.trycloudflare.com"
 embedded = true
 
 [build]
@@ -12,13 +12,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_cart_transforms"
 
 [auth]
 redirect_urls = [
-  "https://country-vietnam-painful-batman.trycloudflare.com/auth/callback",
-  "https://country-vietnam-painful-batman.trycloudflare.com/auth/shopify/callback",
-  "https://country-vietnam-painful-batman.trycloudflare.com/api/auth/callback"
+  "https://repository-hart-assure-corrected.trycloudflare.com/auth/callback",
+  "https://repository-hart-assure-corrected.trycloudflare.com/auth/shopify/callback",
+  "https://repository-hart-assure-corrected.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
