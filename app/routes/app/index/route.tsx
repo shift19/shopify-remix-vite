@@ -14,13 +14,15 @@ const Index = () => {
     const shopify = useAppBridge();
 
     const isLoading = ['loading', 'submitting'].includes(nav.state) && nav.formMethod === 'POST';
-    const productId = String(actionData?.product?.id).replace('gid://shopify/Product/', '');
+    const productId = actionData?.product?.id;
 
     useEffect(() => {
+        console.log('Product created:', productId);
+
         if (productId) {
             shopify.toast.show('Product created');
         }
-    }, [productId]);
+    }, [productId, shopify]);
 
     const generateProduct = () => submit({}, { replace: true, method: 'POST' });
 

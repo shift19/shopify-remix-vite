@@ -35,7 +35,7 @@
     "plugins": [
       {
         "name": "@0no-co/graphqlsp",
-        "schema": "https://shopify.dev/admin-graphql-direct-proxy/2024-01",
+        "schema": "https://shopify.dev/admin-graphql-direct-proxy/2024-04",
         "tadaOutputLocation": "./app/graphql/graphql-env.d.ts"
       }
     ]
