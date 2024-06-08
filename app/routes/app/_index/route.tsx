@@ -1,15 +1,94 @@
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
 import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { StatusCode } from '@shopify/network';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
-import type { ActionData } from '~/routes/app/index/action.server';
+import {
+    productOperationQuery,
+    type ProductOperationResult,
+    type ProductOperationVariables,
+    setProductMutation,
+    type SetProductResult,
+    type SetProductVariables,
+} from '~/graphql';
+import { authenticate } from '~/shopify.server';
+import type { ReturnType } from '~/types';
 
-export { loader } from '~/routes/app/index/loader.server';
-export { action } from '~/routes/app/index/action.server';
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+    await authenticate.admin(request);
+
+    return null;
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+    const { admin } = await authenticate.admin(request);
+    const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
+
+    const {
+        data: { productSet: productSetResponse },
+    } = (await admin
+        .graphql(setProductMutation, {
+            variables: {
+                input: {
+                    title: `${color} Snowboard`,
+                    productOptions: [{ name: 'Title', values: [{ name: 'Default Title' }] }],
+                    variants: [
+                        {
+                            optionValues: [
+                                {
+                                    optionName: 'Title',
+                                    name: 'Default Title',
+                                },
+                            ],
+                            // @ts-expect-error - missing price field
+                            price: '199.99',
+                        },
+                    ],
+                },
+            } satisfies SetProductVariables,
+        })
+        .then((res) => res.json())) as ReturnType<SetProductResult>;
+
+    if (!productSetResponse?.productSetOperation) {
+        return json(
+            {
+                product: null,
+                errors: productSetResponse?.userErrors,
+            },
+            StatusCode.BadRequest,
+        );
+    }
+
+    let productOperationResponse: ProductOperationResult | undefined;
+    do {
+        // ...
+        const { data } = (await admin
+            .graphql(productOperationQuery, {
+                variables: {
+                    id: productSetResponse.productSetOperation.id,
+                } satisfies ProductOperationVariables,
+            })
+            .then((res) => res.json())) as ReturnType<ProductOperationResult>;
+        productOperationResponse = data;
+
+        // wait for 1 second before checking the status again
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    } while (productOperationResponse?.productOperation?.status !== 'COMPLETE');
+
+    return json(
+        {
+            product: productOperationResponse?.productOperation?.product,
+            errors: null,
+        },
+        StatusCode.Ok,
+    );
+};
 
 const Index = () => {
     const nav = useNavigation();
-    const actionData = useActionData<ActionData>();
+    const actionData = useActionData<typeof action>();
     const submit = useSubmit();
     const shopify = useAppBridge();
 

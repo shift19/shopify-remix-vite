@@ -6,5 +6,3 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     return null;
 };
-
-export type LoaderData = typeof loader;

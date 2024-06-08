@@ -5,7 +5,7 @@ interface LoginErrorMessage {
     shop?: string;
 }
 
-export const loginErrorMessage = (loginErrors: LoginError): LoginErrorMessage => {
+export function loginErrorMessage(loginErrors: LoginError): LoginErrorMessage {
     if (loginErrors?.shop === LoginErrorType.MissingShop) {
         return { shop: 'Please enter your shop domain to log in' };
     } else if (loginErrors?.shop === LoginErrorType.InvalidShop) {
@@ -13,4 +13,4 @@ export const loginErrorMessage = (loginErrors: LoginError): LoginErrorMessage =>
     }
 
     return {};
-};
+}

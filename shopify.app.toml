@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://sponge-careful-optionally.ngrok-free.app"
+application_url = "https://some-pas-bizrate-laboratory.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://sponge-careful-optionally.ngrok-free.app/auth/callback",
-  "https://sponge-careful-optionally.ngrok-free.app/auth/shopify/callback",
-  "https://sponge-careful-optionally.ngrok-free.app/api/auth/callback"
+  "https://some-pas-bizrate-laboratory.trycloudflare.com/auth/callback",
+  "https://some-pas-bizrate-laboratory.trycloudflare.com/auth/shopify/callback",
+  "https://some-pas-bizrate-laboratory.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

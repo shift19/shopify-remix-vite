@@ -4,51 +4,44 @@ import { BlockStack, Box, Card, Layout, Link, List, Page, Text } from '@shopify/
 export default function AdditionalPage() {
     return (
         <Page>
-            <TitleBar title='Additional Page' />
+            <TitleBar title="Additional page"/>
             <Layout>
                 <Layout.Section>
                     <Card>
-                        <BlockStack gap='300'>
-                            <Text
-                                as='p'
-                                variant='bodyMd'
-                            >
-                                The app template comes with an additional page which demonstrates how to create multiple
-                                pages within app navigation using{' '}
+                        <BlockStack gap="300">
+                            <Text as="p" variant="bodyMd">
+                                The app template comes with an additional page which
+                                demonstrates how to create multiple pages within app navigation
+                                using{ ' ' }
                                 <Link
-                                    url='https://shopify.dev/docs/apps/tools/app-bridge'
-                                    target='_blank'
+                                    url="https://shopify.dev/docs/apps/tools/app-bridge"
+                                    target="_blank"
                                     removeUnderline
                                 >
                                     App Bridge
                                 </Link>
                                 .
                             </Text>
-                            <Text
-                                as='p'
-                                variant='bodyMd'
-                            >
-                                To create your own page and have it show up in the app navigation, add a page inside{' '}
-                                <Code>app/routes</Code>, and a link to it in the <Code>&lt;ui-nav-menu&gt;</Code>{' '}
-                                component found in <Code>app/routes/app.jsx</Code>.
+                            <Text as="p" variant="bodyMd">
+                                To create your own page and have it show up in the app
+                                navigation, add a page inside <Code>app/routes</Code>, and a
+                                link to it in the <Code>&lt;NavMenu&gt;</Code> component found
+                                in <Code>app/routes/app.jsx</Code>.
                             </Text>
                         </BlockStack>
                     </Card>
                 </Layout.Section>
-                <Layout.Section variant='oneThird'>
+                <Layout.Section variant="oneThird">
                     <Card>
-                        <BlockStack gap='200'>
-                            <Text
-                                as='h2'
-                                variant='headingMd'
-                            >
+                        <BlockStack gap="200">
+                            <Text as="h2" variant="headingMd">
                                 Resources
                             </Text>
                             <List>
                                 <List.Item>
                                     <Link
-                                        url='https://shopify.dev/docs/apps/design-guidelines/navigation#app-nav'
-                                        target='_blank'
+                                        url="https://shopify.dev/docs/apps/design-guidelines/navigation#app-nav"
+                                        target="_blank"
                                         removeUnderline
                                     >
                                         App nav best practices
@@ -66,15 +59,16 @@ export default function AdditionalPage() {
 function Code({ children }: { children: React.ReactNode }) {
     return (
         <Box
-            as='span'
-            padding='025'
-            paddingInlineStart='100'
-            paddingInlineEnd='100'
-            borderWidth='025'
-            borderColor='border'
-            borderRadius='100'
+            as="span"
+            padding="025"
+            paddingInlineStart="100"
+            paddingInlineEnd="100"
+            background="bg-surface-active"
+            borderWidth="025"
+            borderColor="border"
+            borderRadius="100"
         >
-            <code>{children}</code>
+            <code>{ children }</code>
         </Box>
     );
 }
