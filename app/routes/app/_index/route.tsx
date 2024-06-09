@@ -5,16 +5,10 @@ import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { StatusCode } from '@shopify/network';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
-import {
-    productOperationQuery,
-    type ProductOperationResult,
-    type ProductOperationVariables,
-    setProductMutation,
-    type SetProductResult,
-    type SetProductVariables,
-} from '~/graphql';
+import { CREATE_PRODUCT } from '~/actions/_intents';
+import { createProduct } from '~/actions/createProduct.server';
 import { authenticate } from '~/shopify.server';
-import type { ReturnType } from '~/types';
+import { getRequestIntent } from '~/utils';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     await authenticate.admin(request);
@@ -23,74 +17,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const { admin } = await authenticate.admin(request);
-    const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
+    const _intent = await getRequestIntent(request);
 
-    const {
-        data: { productSet: productSetResponse },
-    } = (await admin
-        .graphql(setProductMutation, {
-            variables: {
-                input: {
-                    title: `${color} Snowboard`,
-                    productOptions: [{ name: 'Title', values: [{ name: 'Default Title' }] }],
-                    variants: [
-                        {
-                            optionValues: [
-                                {
-                                    optionName: 'Title',
-                                    name: 'Default Title',
-                                },
-                            ],
-                            // @ts-expect-error - missing price field
-                            price: '199.99',
-                        },
-                    ],
+    switch (_intent) {
+        case CREATE_PRODUCT:
+            return createProduct({ request });
+        default:
+            return json(
+                {
+                    product: null,
+                    errors: [{ message: 'Invalid intent' }],
                 },
-            } satisfies SetProductVariables,
-        })
-        .then((res) => res.json())) as ReturnType<SetProductResult>;
-
-    if (!productSetResponse?.productSetOperation) {
-        return json(
-            {
-                product: null,
-                errors: productSetResponse?.userErrors,
-            },
-            StatusCode.BadRequest,
-        );
+                { status: StatusCode.BadRequest },
+            );
     }
-
-    let productOperationResponse: ProductOperationResult | undefined;
-    do {
-        // ...
-        const { data } = (await admin
-            .graphql(productOperationQuery, {
-                variables: {
-                    id: productSetResponse.productSetOperation.id,
-                } satisfies ProductOperationVariables,
-            })
-            .then((res) => res.json())) as ReturnType<ProductOperationResult>;
-        productOperationResponse = data;
-
-        // wait for 1 second before checking the status again
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-    } while (productOperationResponse?.productOperation?.status !== 'COMPLETE');
-
-    return json(
-        {
-            product: productOperationResponse?.productOperation?.product,
-            errors: null,
-        },
-        StatusCode.Ok,
-    );
 };
 
-const Index = () => {
-    const nav = useNavigation();
+const IndexPage = () => {
     const actionData = useActionData<typeof action>();
-    const submit = useSubmit();
+
     const shopify = useAppBridge();
+
+    const nav = useNavigation();
+    const submit = useSubmit();
 
     const isLoading = ['loading', 'submitting'].includes(nav.state) && nav.formMethod === 'POST';
     const productId = actionData?.product?.id;
@@ -103,7 +52,17 @@ const Index = () => {
         }
     }, [productId, shopify]);
 
-    const generateProduct = () => submit({}, { replace: true, method: 'POST' });
+    const generateProduct = () =>
+        submit(
+            {
+                _intent: CREATE_PRODUCT,
+            },
+            {
+                replace: true,
+                encType: 'application/json',
+                method: 'POST',
+            },
+        );
 
     return (
         <Page>
@@ -332,4 +291,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default IndexPage;

@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
+import { StatusCode } from '@shopify/network';
 import db from '~/db.server';
 import { authenticate } from '~/shopify.server';
 
@@ -21,7 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         case 'CUSTOMERS_REDACT':
         case 'SHOP_REDACT':
         default:
-            throw new Response('Unhandled webhook topic', { status: 404 });
+            throw new Response('Unhandled webhook topic', { status: StatusCode.NotFound });
     }
 
     throw new Response();
