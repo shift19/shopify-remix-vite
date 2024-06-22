@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://collectables-spyware-pleasant-lake.trycloudflare.com"
+application_url = "https://musicians-documentary-ensemble-lewis.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,13 +16,17 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://collectables-spyware-pleasant-lake.trycloudflare.com/auth/callback",
-  "https://collectables-spyware-pleasant-lake.trycloudflare.com/auth/shopify/callback",
-  "https://collectables-spyware-pleasant-lake.trycloudflare.com/api/auth/callback"
+  "https://musicians-documentary-ensemble-lewis.trycloudflare.com/auth/callback",
+  "https://musicians-documentary-ensemble-lewis.trycloudflare.com/auth/shopify/callback",
+  "https://musicians-documentary-ensemble-lewis.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-01"
+api_version = "2024-04"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled", "products/create" ]
+  uri = "/webhooks"
 
 [pos]
 embedded = false
