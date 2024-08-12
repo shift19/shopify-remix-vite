@@ -6,9 +6,9 @@ import { StatusCode } from '@shopify/network';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
 import { CREATE_PRODUCT } from '~/actions/_intents';
-import { createProduct } from '~/actions/createProduct.server';
+import { createProduct } from '~/actions/products/create.server';
+import { getRequestIntent } from '~/actions/utils.server';
 import { authenticate } from '~/shopify.server';
-import { getRequestIntent } from '~/utils';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     await authenticate.admin(request);

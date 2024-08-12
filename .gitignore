@@ -11,7 +11,11 @@ node_modules
 database.sqlite
 
 .env
+.env.*
+
 package-lock.json
 yarn.lock
 
 /app/graphql/graphql-env.d.ts
+
+/extensions/*/dist
