@@ -20,7 +20,7 @@ export class Session extends ShopifySession {
 
 export class PrismaSessionStorage<T extends PrismaClient> implements SessionStorage {
     private ready: Promise<any>;
-    private readonly tableName: string = 'shop';
+    private readonly tableName: string = 'session';
 
     constructor(
         private prisma: T,

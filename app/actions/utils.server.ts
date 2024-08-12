@@ -3,16 +3,16 @@ export const getRequestIntent = async (request: Request): Promise<string> => {
     return _intent;
 };
 
+export const checkRequestIntent = async (request: Request, intent: string) => {
+    const _intent = await getRequestIntent(request);
+    return _intent === intent;
+};
+
 export const InvalidIntentError = {
     errors: [
         {
             field: '_intent',
-            message: 'Invalid intent'
-        }
-    ]
-};
-
-export const checkRequestIntent = async (request: Request, intent: string) => {
-    const _intent = await getRequestIntent(request);
-    return _intent === intent;
+            message: 'Invalid intent',
+        },
+    ],
 };

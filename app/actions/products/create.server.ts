@@ -1,6 +1,7 @@
 import { json } from '@remix-run/node';
 import { StatusCode } from '@shopify/network';
 import { CREATE_PRODUCT } from '~/actions/_intents';
+import { checkRequestIntent, InvalidIntentError } from '~/actions/utils.server';
 import {
     productOperationQuery,
     type ProductOperationResult,
@@ -11,25 +12,17 @@ import {
 } from '~/graphql';
 import { authenticate } from '~/shopify.server';
 import type { ReturnType } from '~/types';
-import { getRequestIntent } from '~/utils';
 
 type CreateProductProps = {
     request: Request;
 };
 
 export const createProduct = async ({ request }: CreateProductProps) => {
-    const _intent = await getRequestIntent(request);
-
-    if (_intent !== CREATE_PRODUCT) {
+    if (await checkRequestIntent(request, CREATE_PRODUCT)) {
         return json(
             {
                 product: null,
-                errors: [
-                    {
-                        field: '_intent',
-                        message: 'Invalid intent',
-                    },
-                ],
+                ...InvalidIntentError,
             },
             StatusCode.BadRequest,
         );
