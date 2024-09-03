@@ -89,6 +89,7 @@ export const createProduct = async ({ request }: CreateProductProps) => {
                 return {
                     productOperation: {
                         product: null,
+                        status: 'COMPLETE',
                         userErrors: [{ field: 'product', message: 'Error fetching product operation' }],
                     },
                 };

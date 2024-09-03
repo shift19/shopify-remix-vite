@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://ace-italia-reach-enhanced.trycloudflare.com"
+application_url = "https://taking-auditor-ago-hours.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://ace-italia-reach-enhanced.trycloudflare.com/auth/callback",
-  "https://ace-italia-reach-enhanced.trycloudflare.com/auth/shopify/callback",
-  "https://ace-italia-reach-enhanced.trycloudflare.com/api/auth/callback"
+  "https://taking-auditor-ago-hours.trycloudflare.com/auth/callback",
+  "https://taking-auditor-ago-hours.trycloudflare.com/auth/shopify/callback",
+  "https://taking-auditor-ago-hours.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

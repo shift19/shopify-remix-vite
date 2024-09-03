@@ -1,5 +1,5 @@
 import '@shopify/shopify-app-remix/adapters/node';
-import { restResources } from '@shopify/shopify-api/rest/admin/2024-04';
+import { restResources } from '@shopify/shopify-api/rest/admin/2024-07';
 import { ApiVersion, AppDistribution, shopifyApp } from '@shopify/shopify-app-remix/server';
 import prisma from '~/db.server';
 import { PrismaSessionStorage } from '~/session.server';

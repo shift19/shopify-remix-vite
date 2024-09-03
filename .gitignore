@@ -19,3 +19,6 @@ yarn.lock
 /app/graphql/graphql-env.d.ts
 
 /extensions/*/dist
+
+.shopify/*
+.shopify.lock

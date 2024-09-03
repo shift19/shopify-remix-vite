@@ -13,7 +13,7 @@ datasource db {
 model Session {
     id            Int       @id @default(autoincrement())
     shop          String    @unique
-    shopId        String   @unique @map("shop_id")
+    shopId        String    @unique @map("shop_id")
     state         String
     isOnline      Boolean   @default(false) @map("is_online")
     scope         String?
