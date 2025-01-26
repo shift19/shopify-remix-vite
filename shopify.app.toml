@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://taking-auditor-ago-hours.trycloudflare.com"
+application_url = "https://bones-switching-defeat-vehicles.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,17 +16,37 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://taking-auditor-ago-hours.trycloudflare.com/auth/callback",
-  "https://taking-auditor-ago-hours.trycloudflare.com/auth/shopify/callback",
-  "https://taking-auditor-ago-hours.trycloudflare.com/api/auth/callback"
+  "https://bones-switching-defeat-vehicles.trycloudflare.com/auth/callback",
+  "https://bones-switching-defeat-vehicles.trycloudflare.com/auth/shopify/callback",
+  "https://bones-switching-defeat-vehicles.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-04"
+api_version = "2024-10"
 
   [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled", "products/create" ]
-  uri = "/webhooks"
+  uri = "/webhooks/app/uninstalled"
+  topics = [ "app/uninstalled" ]
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes-update"
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/customers/data-request"
+  compliance_topics = [ "customers/data_request" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/customers/redact"
+  compliance_topics = [ "customers/redact" ]
+
+  [[webhooks.subscriptions]]
+  uri = "/webhooks/shop/redact"
+  compliance_topics = [ "shop/redact" ]
+
+  [[webhooks.subscriptions]]
+  topics = [ "products/create" ]
+  uri = "/webhooks/products/create"
 
 [pos]
 embedded = false

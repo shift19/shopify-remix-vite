@@ -1,16 +1,18 @@
-import fs from 'fs';
 import { ApiType, shopifyApiProject } from '@shopify/api-codegen-preset';
-import { ApiVersion } from '@shopify/shopify-app-remix/server';
+import { ApiVersion } from '@shopify/shopify-api';
+import * as fs from 'fs';
 import type { IGraphQLConfig } from 'graphql-config';
+
+const apiVersion = ApiVersion.October24;
 
 function getConfig() {
     const config: IGraphQLConfig = {
         projects: {
             default: shopifyApiProject({
                 apiType: ApiType.Admin,
-                apiVersion: ApiVersion.July24,
+                apiVersion: apiVersion,
                 documents: ['./app/**/*.{js,ts,jsx,tsx}'],
-                outputDir: './app/types',
+                outputDir: './app/graphql',
             }),
         },
     };

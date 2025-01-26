@@ -10,10 +10,10 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Session {
-    id            Int       @id @default(autoincrement())
-    shop          String    @unique
-    shopId        String    @unique @map("shop_id")
+model Shop {
+    id            String    @unique
+    shopId        Int       @id @default(autoincrement()) @map("shop_id")
+    shop          String
     state         String
     isOnline      Boolean   @default(false) @map("is_online")
     scope         String?
@@ -23,10 +23,14 @@ model Session {
     firstName     String?   @map("first_name")
     lastName      String?   @map("last_name")
     email         String?
-    accountOwner  Boolean   @default(false) @map("account_owner")
+    accountOwner  Boolean?  @map("account_owner")
     locale        String?
-    collaborator  Boolean?  @default(false)
-    emailVerified Boolean?  @default(false) @map("email_verified")
+    collaborator  Boolean?
+    emailVerified Boolean?  @map("email_verified")
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
 
-    @@map("sessions")
+    @@map("shops")
+    @@index([shop], name: "shop")
+    @@index([id, shopId], name: "id_shop_id")
 }

@@ -14,7 +14,7 @@ export type ExtensionTrottleStatus = {
     restoreRate: number;
 };
 
-export type ReturnType<T> = {
+export type GraphqlApiResponse<T> = {
     data: T;
     extensions: Extensions;
 };

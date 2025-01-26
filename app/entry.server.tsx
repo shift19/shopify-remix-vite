@@ -3,10 +3,16 @@ import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { PassThrough } from 'stream';
-import { addDocumentResponseHeaders } from '~/shopify.server';
+import { addDocumentResponseHeaders } from './shopify.server';
 
-const ABORT_DELAY = 5000;
-export default (request: Request, responseStatusCode: number, responseHeaders: Headers, remixContext: EntryContext) => {
+export const streamTimeout = 5000;
+
+export default async function handleRequest(
+    request: Request,
+    responseStatusCode: number,
+    responseHeaders: Headers,
+    remixContext: EntryContext,
+) {
     addDocumentResponseHeaders(request, responseHeaders);
     const userAgent = request.headers.get('user-agent');
     const callbackName = isbot(userAgent ?? '') ? 'onAllReady' : 'onShellReady';
@@ -16,7 +22,6 @@ export default (request: Request, responseStatusCode: number, responseHeaders: H
             <RemixServer
                 context={remixContext}
                 url={request.url}
-                abortDelay={ABORT_DELAY}
             />,
             {
                 [callbackName]: () => {
@@ -42,6 +47,8 @@ export default (request: Request, responseStatusCode: number, responseHeaders: H
             },
         );
 
-        setTimeout(abort, ABORT_DELAY);
+        // Automatically timeout the React renderer after 6 seconds, which ensures
+        // React has enough time to flush down the rejected boundary contents
+        setTimeout(abort, streamTimeout + 1000);
     });
-};
+}

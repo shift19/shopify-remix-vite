@@ -1,112 +1,68 @@
-import { json } from '@remix-run/node';
-import { StatusCode } from '@shopify/network';
 import { CREATE_PRODUCT } from '~/actions/_intents';
-import { checkRequestIntent, InvalidIntentError } from '~/actions/utils.server';
+import { authenticateRequestIntent } from '~/actions/utils.server';
 import {
-    productOperationQuery,
-    type ProductOperationResult,
-    type ProductOperationVariables,
-    setProductMutation,
-    type SetProductResult,
-    type SetProductVariables,
-} from '~/graphql';
+    type Product,
+    productCreateMutation,
+    type ProductCreateMutationResult,
+} from '~/graphql/mutations/productCreateMutation';
+import {
+    type ProductVariant,
+    productVariantsBulkUpdateMutation,
+    type ProductVariantsBulkUpdateMutationResult,
+} from '~/graphql/mutations/productVariantsBulkUpdateMutation';
 import { authenticate } from '~/shopify.server';
-import type { ReturnType } from '~/types';
+import type { GraphqlApiResponse } from '~/types/graphql-api.types';
+import { nodesFromEdges } from '~/utils/graphql';
 
 type CreateProductProps = {
     request: Request;
 };
 
-export const createProduct = async ({ request }: CreateProductProps) => {
-    if (await checkRequestIntent(request, CREATE_PRODUCT)) {
-        return json(
-            {
-                product: null,
-                ...InvalidIntentError,
-            },
-            StatusCode.BadRequest,
-        );
-    }
+type CreateProductResult = {
+    message?: string;
+    product?: Product | null;
+    variants?: ProductVariant[] | null;
+};
+
+export const createProduct = async ({ request }: CreateProductProps): Promise<CreateProductResult> => {
+    await authenticateRequestIntent(request, CREATE_PRODUCT);
 
     const { admin } = await authenticate.admin(request);
     const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
 
-    const {
-        data: { productSet: productSetResponse },
-    } = await admin
-        .graphql(setProductMutation, {
+    const { data: productData } = await admin
+        .graphql(productCreateMutation, {
             variables: {
-                input: {
+                product: {
                     title: `${color} Snowboard`,
-                    productOptions: [{ name: 'Title', values: [{ name: 'Default Title' }] }],
-                    variants: [
-                        {
-                            optionValues: [
-                                {
-                                    optionName: 'Title',
-                                    name: 'Default Title',
-                                },
-                            ],
-                            price: '199.99',
-                        },
-                    ],
                 },
-            } as SetProductVariables,
-        })
-        .then((res) => res.json())
-        .catch((error) => {
-            console.error('Error creating product:', error);
-            return {
-                productSet: {
-                    productSetOperation: null,
-                    userErrors: [{ field: 'product', message: 'Error creating product' }],
-                },
-            };
-        })
-        .then((data) => data as ReturnType<SetProductResult>);
-
-    if (!productSetResponse?.productSetOperation) {
-        return json(
-            {
-                product: null,
-                errors: productSetResponse?.userErrors,
             },
-            StatusCode.BadRequest,
-        );
+        })
+        .then((res) => res.json() as Promise<GraphqlApiResponse<ProductCreateMutationResult>>);
+
+    const product = productData.productCreate?.product;
+
+    if (!product) {
+        return {
+            message: 'Product not created',
+        };
     }
 
-    let productOperationResponse: ProductOperationResult | undefined;
-    do {
-        const { data } = await admin
-            .graphql(productOperationQuery, {
-                variables: {
-                    id: productSetResponse.productSetOperation.id,
-                } as ProductOperationVariables,
-            })
-            .then(async (res) => res.json())
-            .catch((error) => {
-                console.error('Error fetching product operation:', error);
-                return {
-                    productOperation: {
-                        product: null,
-                        status: 'COMPLETE',
-                        userErrors: [{ field: 'product', message: 'Error fetching product operation' }],
-                    },
-                };
-            })
-            .then((data) => data as ReturnType<ProductOperationResult>);
+    const [variant] = nodesFromEdges(product.variants.edges);
 
-        productOperationResponse = data;
+    const { data: updatedVariantsData } = await admin
+        .graphql(productVariantsBulkUpdateMutation, {
+            variables: {
+                productId: product.id,
+                variants: [{ id: variant.id, price: '100.00' }],
+            },
+        })
+        .then((res) => res.json() as Promise<GraphqlApiResponse<ProductVariantsBulkUpdateMutationResult>>);
 
-        // wait for 1 second before checking the status again
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-    } while (productOperationResponse?.productOperation?.status !== 'COMPLETE');
+    const variants = updatedVariantsData.productVariantsBulkUpdate?.productVariants;
 
-    return json(
-        {
-            product: productOperationResponse?.productOperation?.product,
-            errors: productOperationResponse?.productOperation?.userErrors,
-        },
-        StatusCode.Ok,
-    );
+    return {
+        product,
+        variants,
+    };
 };

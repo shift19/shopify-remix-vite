@@ -1,48 +1,42 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
+import { useFetcher, useLoaderData } from '@remix-run/react';
 import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
-import { StatusCode } from '@shopify/network';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
 import { CREATE_PRODUCT } from '~/actions/_intents';
 import { createProduct } from '~/actions/products/create.server';
-import { getRequestIntent } from '~/actions/utils.server';
+import { getRequestIntent, INVALID_INTENT_RESPONSE } from '~/actions/utils.server';
 import { authenticate } from '~/shopify.server';
+import { parseGid } from '~/utils/graphql';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    await authenticate.admin(request);
+    const { session } = await authenticate.admin(request);
 
-    return null;
+    return {
+        session,
+        shopId: { shopId: session.shopId },
+    };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    const _intent = await getRequestIntent(request);
-
-    switch (_intent) {
+    switch (await getRequestIntent(request)) {
         case CREATE_PRODUCT:
             return createProduct({ request });
         default:
-            return json(
-                {
-                    product: null,
-                    errors: [{ message: 'Invalid intent' }],
-                },
-                { status: StatusCode.BadRequest },
-            );
+            return INVALID_INTENT_RESPONSE;
     }
 };
 
 const IndexPage = () => {
-    const actionData = useActionData<typeof action>();
+    const loaderData = useLoaderData<typeof loader>();
+
+    const fetcher = useFetcher<typeof createProduct>();
 
     const shopify = useAppBridge();
+    const isLoading = ['loading', 'submitting'].includes(fetcher.state) && fetcher.formMethod === 'POST';
 
-    const nav = useNavigation();
-    const submit = useSubmit();
-
-    const isLoading = ['loading', 'submitting'].includes(nav.state) && nav.formMethod === 'POST';
-    const productId = actionData?.product?.id;
+    const product = fetcher.data?.product;
+    const productId = parseGid(product?.id || '');
 
     useEffect(() => {
         console.log('Product created:', productId);
@@ -53,14 +47,13 @@ const IndexPage = () => {
     }, [productId, shopify]);
 
     const generateProduct = () =>
-        submit(
+        fetcher.submit(
             {
                 _intent: CREATE_PRODUCT,
             },
             {
-                replace: true,
-                encType: 'application/json',
                 method: 'POST',
+                encType: 'application/json',
             },
         );
 
@@ -139,7 +132,7 @@ const IndexPage = () => {
                                     >
                                         Generate a product
                                     </Button>
-                                    {actionData?.product && (
+                                    {fetcher.data?.product && (
                                         <Button
                                             url={`shopify:admin/products/${productId}`}
                                             target='_blank'
@@ -149,19 +142,70 @@ const IndexPage = () => {
                                         </Button>
                                     )}
                                 </InlineStack>
-                                {actionData?.product && (
-                                    <Box
-                                        padding='400'
-                                        borderWidth='025'
-                                        borderRadius='200'
-                                        borderColor='border'
-                                        overflowX='scroll'
-                                    >
-                                        <pre style={{ margin: 0 }}>
-                                            <code>{JSON.stringify(actionData.product, null, 2)}</code>
-                                        </pre>
-                                    </Box>
+                                {fetcher.data?.product && (
+                                    <>
+                                        <Text
+                                            as='h3'
+                                            variant='headingMd'
+                                        >
+                                            {' '}
+                                            productCreate mutation
+                                        </Text>
+                                        <Box
+                                            padding='400'
+                                            background='bg-surface-active'
+                                            borderWidth='025'
+                                            borderRadius='200'
+                                            borderColor='border'
+                                            overflowX='scroll'
+                                        >
+                                            <pre style={{ margin: 0 }}>
+                                                <code>{JSON.stringify(fetcher.data.product, null, 2)}</code>
+                                            </pre>
+                                        </Box>
+                                        <Text
+                                            as='h3'
+                                            variant='headingMd'
+                                        >
+                                            {' '}
+                                            productVariantsBulkUpdate mutation
+                                        </Text>
+                                        <Box
+                                            padding='400'
+                                            background='bg-surface-active'
+                                            borderWidth='025'
+                                            borderRadius='200'
+                                            borderColor='border'
+                                            overflowX='scroll'
+                                        >
+                                            <pre style={{ margin: 0 }}>
+                                                <code>{JSON.stringify(fetcher.data.variants, null, 2)}</code>
+                                            </pre>
+                                        </Box>
+                                    </>
                                 )}
+                                <BlockStack gap='200'>
+                                    <Text
+                                        as='h2'
+                                        variant='headingMd'
+                                    >
+                                        Session data
+                                    </Text>
+                                    {loaderData && (
+                                        <Box
+                                            padding='400'
+                                            background='bg-surface-active'
+                                            borderWidth='025'
+                                            borderRadius='200'
+                                            borderColor='border'
+                                            overflowX='scroll'
+                                        >
+                                            <pre style={{ margin: 0 }}>
+                                                <code>{JSON.stringify(loaderData?.session, null, 2)}</code>
+                                            </pre>
+                                        </Box>
+                                    )}
+                                </BlockStack>
                             </BlockStack>
                         </Card>
                     </Layout.Section>
