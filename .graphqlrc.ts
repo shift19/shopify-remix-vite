@@ -3,7 +3,7 @@ import { ApiVersion } from '@shopify/shopify-api';
 import * as fs from 'fs';
 import type { IGraphQLConfig } from 'graphql-config';
 
-const apiVersion = ApiVersion.October24;
+const apiVersion = ApiVersion.July25;
 
 function getConfig() {
     const config: IGraphQLConfig = {

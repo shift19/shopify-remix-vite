@@ -3,9 +3,9 @@ import { useFetcher, useLoaderData } from '@remix-run/react';
 import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { BlockStack, Box, Button, Card, InlineStack, Layout, Link, List, Page, Text } from '@shopify/polaris';
 import { useEffect } from 'react';
-import { CREATE_PRODUCT } from '~/actions/_intents';
+import { CREATE_PRODUCT } from '~/actions/intents';
 import { createProduct } from '~/actions/products/create.server';
-import { getRequestIntent, INVALID_INTENT_RESPONSE } from '~/actions/utils.server';
+import { handleIntentAction } from '~/actions/utils.server';
 import { authenticate } from '~/shopify.server';
 import { parseGid } from '~/utils/graphql';
 
@@ -18,24 +18,24 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     };
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-    switch (await getRequestIntent(request)) {
-        case CREATE_PRODUCT:
-            return createProduct({ request });
-        default:
-            return INVALID_INTENT_RESPONSE;
-    }
-};
+export const action = async ({ request }: ActionFunctionArgs) =>
+    handleIntentAction(request, {
+        [CREATE_PRODUCT]: createProduct,
+    });
+
+export { ErrorBoundary } from '~/components/error-boundary';
 
 const IndexPage = () => {
     const loaderData = useLoaderData<typeof loader>();
 
-    const fetcher = useFetcher<typeof createProduct>();
+    const fetcher = useFetcher<typeof action>();
 
     const shopify = useAppBridge();
     const isLoading = ['loading', 'submitting'].includes(fetcher.state) && fetcher.formMethod === 'POST';
 
     const product = fetcher.data?.product;
+    const variants = fetcher.data?.variants;
+
     const productId = parseGid(product?.id || '');
 
     useEffect(() => {
@@ -132,7 +132,7 @@ const IndexPage = () => {
                                     >
                                         Generate a product
                                     </Button>
-                                    {fetcher.data?.product && (
+                                    {product && (
                                         <Button
                                             url={`shopify:admin/products/${productId}`}
                                             target='_blank'
@@ -142,7 +142,7 @@ const IndexPage = () => {
                                         </Button>
                                     )}
                                 </InlineStack>
-                                {fetcher.data?.product && (
+                                {product && (
                                     <>
                                         <Text
                                             as='h3'
@@ -160,7 +160,7 @@ const IndexPage = () => {
                                             overflowX='scroll'
                                         >
                                             <pre style={{ margin: 0 }}>
-                                                <code>{JSON.stringify(fetcher.data.product, null, 2)}</code>
+                                                <code>{JSON.stringify(product, null, 2)}</code>
                                             </pre>
                                         </Box>
                                         <Text
@@ -179,7 +179,7 @@ const IndexPage = () => {
                                             overflowX='scroll'
                                         >
                                             <pre style={{ margin: 0 }}>
-                                                <code>{JSON.stringify(fetcher.data.variants, null, 2)}</code>
+                                                <code>{JSON.stringify(variants, null, 2)}</code>
                                             </pre>
                                         </Box>
                                     </>

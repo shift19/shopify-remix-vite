@@ -1,27 +1,22 @@
-import { CREATE_PRODUCT } from '~/actions/_intents';
+import { CREATE_PRODUCT } from '~/actions/intents';
 import { authenticateRequestIntent } from '~/actions/utils.server';
-import {
-    type Product,
-    productCreateMutation,
-    type ProductCreateMutationResult,
-} from '~/graphql/mutations/productCreateMutation';
-import {
-    type ProductVariant,
-    productVariantsBulkUpdateMutation,
-    type ProductVariantsBulkUpdateMutationResult,
-} from '~/graphql/mutations/productVariantsBulkUpdateMutation';
+import type { ProductCreateMutation, ProductVariantsBulkUpdateMutation } from '~/graphql/admin.generated';
+import { productCreate } from '~/graphql/mutations/product-create';
+import { productVariantsBulkUpdate } from '~/graphql/mutations/product-variants-bulk-update';
 import { authenticate } from '~/shopify.server';
-import type { GraphqlApiResponse } from '~/types/graphql-api.types';
 import { nodesFromEdges } from '~/utils/graphql';
 
 type CreateProductProps = {
     request: Request;
 };
 
-type CreateProductResult = {
-    message?: string;
-    product?: Product | null;
-    variants?: ProductVariant[] | null;
+export { CREATE_PRODUCT } from '~/actions/intents';
+
+export type CreateProductResult = {
+    product: NonNullable<NonNullable<ProductCreateMutation['productCreate']>['product']>;
+    variants: NonNullable<
+        NonNullable<NonNullable<ProductVariantsBulkUpdateMutation['productVariantsBulkUpdate']>['productVariants']>
+    >;
 };
 
 export const createProduct = async ({ request }: CreateProductProps): Promise<CreateProductResult> => {
@@ -31,35 +26,35 @@ export const createProduct = async ({ request }: CreateProductProps): Promise<Cr
     const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
 
     const { data: productData } = await admin
-        .graphql(productCreateMutation, {
+        .graphql(productCreate, {
             variables: {
                 product: {
-                    title: `${color} Snowboard`,
+                    //title: `${color} Snowboard`,
                 },
             },
         })
-        .then((res) => res.json() as Promise<GraphqlApiResponse<ProductCreateMutationResult>>);
+        .then((res) => res.json());
 
-    const product = productData.productCreate?.product;
+    const product = productData?.productCreate?.product;
 
     if (!product) {
-        return {
-            message: 'Product not created',
-        };
+        throw Response.json({
+            error: 'Failed to create product',
+        });
     }
 
     const [variant] = nodesFromEdges(product.variants.edges);
 
     const { data: updatedVariantsData } = await admin
-        .graphql(productVariantsBulkUpdateMutation, {
+        .graphql(productVariantsBulkUpdate, {
             variables: {
                 productId: product.id,
                 variants: [{ id: variant.id, price: '100.00' }],
             },
         })
-        .then((res) => res.json() as Promise<GraphqlApiResponse<ProductVariantsBulkUpdateMutationResult>>);
+        .then((res) => res.json());
 
-    const variants = updatedVariantsData.productVariantsBulkUpdate?.productVariants;
+    const variants = updatedVariantsData?.productVariantsBulkUpdate?.productVariants ?? [];
 
     return {
         product,

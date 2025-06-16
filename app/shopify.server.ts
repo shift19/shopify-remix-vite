@@ -3,7 +3,7 @@ import { ApiVersion, AppDistribution, shopifyApp } from '@shopify/shopify-app-re
 import prisma from '~/db.server';
 import { PrismaSessionStorage } from '~/session-storage.server';
 
-export const apiVersion = ApiVersion.January25;
+export const apiVersion = ApiVersion.July25;
 
 const shopify = shopifyApp({
     apiKey: process.env.SHOPIFY_API_KEY,

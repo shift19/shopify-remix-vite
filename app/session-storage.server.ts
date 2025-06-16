@@ -31,6 +31,7 @@ export interface OnlineAccessInfo {
      */
     associated_user: OnlineAccessUser;
 }
+
 export interface OnlineAccessUser {
     /**
      * The user's ID.

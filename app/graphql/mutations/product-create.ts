@@ -1,7 +1,4 @@
-import { graphql, type ResultOf, type VariablesOf } from 'gql.tada';
-import { print } from 'graphql';
-
-const productCreate = graphql(`
+export const productCreate = `
     #graphql
     mutation productCreate($product: ProductCreateInput!) {
         productCreate(product: $product) {
@@ -27,10 +24,4 @@ const productCreate = graphql(`
             }
         }
     }
-`);
-
-export const productCreateMutation = print(productCreate);
-export type ProductCreateMutationVariables = VariablesOf<typeof productCreate>;
-export type ProductCreateMutationResult = ResultOf<typeof productCreate>;
-
-export type Product = NonNullable<ProductCreateMutationResult['productCreate']>['product'];
+`;

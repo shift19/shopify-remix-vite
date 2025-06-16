@@ -2,7 +2,7 @@
 
 client_id = "b0948a3720470452db23464eb906b8ca"
 name = "remix-vite-template"
-application_url = "https://bones-switching-defeat-vehicles.trycloudflare.com"
+application_url = "https://twiki-former-played-secrets.trycloudflare.com"
 embedded = true
 
 [build]
@@ -15,11 +15,7 @@ include_config_on_deploy = true
 scopes = "write_products"
 
 [auth]
-redirect_urls = [
-  "https://bones-switching-defeat-vehicles.trycloudflare.com/auth/callback",
-  "https://bones-switching-defeat-vehicles.trycloudflare.com/auth/shopify/callback",
-  "https://bones-switching-defeat-vehicles.trycloudflare.com/api/auth/callback"
-]
+redirect_urls = ["https://twiki-former-played-secrets.trycloudflare.com/auth/callback", "https://twiki-former-played-secrets.trycloudflare.com/auth/shopify/callback", "https://twiki-former-played-secrets.trycloudflare.com/api/auth/callback"]
 
 [webhooks]
 api_version = "2024-10"

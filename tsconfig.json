@@ -31,13 +31,6 @@
     },
     "types": [
       "node"
-    ],
-    "plugins": [
-      {
-        "name": "@0no-co/graphqlsp",
-        "schema": "https://shopify.dev/admin-graphql-direct-proxy/2024-10",
-        "tadaOutputLocation": "./app/graphql/graphql-env.d.ts"
-      }
     ]
   }
 }
