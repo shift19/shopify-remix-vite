@@ -2,8 +2,9 @@
   "name": "remix-vite-template",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.11.0",
   "engines": {
-    "node": "^18.20 || ^20.10 || >=21"
+    "node": ">=22"
   },
   "scripts": {
     "build": "remix vite:build",
