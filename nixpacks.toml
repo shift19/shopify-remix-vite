@@ -1,0 +1,14 @@
+# Nixpacks configuration for Remix + Vite + Shopify app
+# https://nixpacks.com/docs/configuration/file
+
+[phases.setup]
+nixPkgs = ["nodejs_20", "pnpm", "openssl"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
+[phases.build]
+cmds = ["pnpm run build"]
+
+[start]
+cmd = "pnpm run docker-start"
